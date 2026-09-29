@@ -1,0 +1,543 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Stratos Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0c0b10;
+    --surface: #17151d;
+    --surface-2: #1e1b25;
+    --border: rgba(255,255,255,0.08);
+    --border-soft: rgba(255,255,255,0.05);
+    --text-primary: #f5f3f7;
+    --text-secondary: #b3b0bd;
+    --text-muted: #7c7986;
+    --accent-violet: #8b6bff;
+    --accent-pink: #ef5da0;
+    --good: #2fce4e;
+    --data-linkedin: #3987e5;
+    --data-x: #9085e9;
+    --data-active: #22b881;
+    --data-paused: #5c5968;
+    --blue-250: #86b6ef;
+    --blue-350: #5598e7;
+    --blue-450: #2a78d6;
+    --blue-600: #184f95;
+    --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .dash {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 28px 16px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* ---------- Header ---------- */
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 4px;
+    position: relative;
+  }
+  .header::before {
+    content: "";
+    position: absolute;
+    left: 0; top: -4px;
+    width: 64px; height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent-violet), var(--accent-pink));
+  }
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 10px;
+  }
+  .title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 700;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .synced {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabbar {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+  }
+  .tab-btn {
+    font-family: var(--font-display);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    padding: 10px 4px 12px;
+    margin-right: 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .tab-btn:hover { color: var(--text-secondary); }
+  .tab-btn[aria-selected="true"] {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent-pink);
+  }
+  .tab-panel { display: flex; flex-direction: column; gap: 20px; }
+
+  /* ---------- KPI row ---------- */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .kpi-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .kpi-value {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+  .kpi-sub {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+  }
+  .kpi--accent .kpi-value { color: var(--accent-pink); }
+
+  /* ---------- Section shell ---------- */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 20px 22px;
+  }
+  .panel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+  .panel-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .panel-note {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .panel-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 2px 0 16px;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* ---------- Bar rows ---------- */
+  .bar-list { display: flex; flex-direction: column; gap: 14px; }
+  .bar-row { display: flex; flex-direction: column; gap: 6px; }
+  .bar-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+  }
+  .bar-row-name { color: var(--text-secondary); font-weight: 600; }
+  .bar-row-value {
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-family: var(--font-display);
+  }
+  .bar-track {
+    height: 10px;
+    background: var(--surface-2);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    min-width: 6px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  /* ---------- Proof / leads ---------- */
+  .proof-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .proof-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .proof-badge {
+    align-self: flex-start;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: rgba(47,206,78,0.12);
+    color: var(--good);
+  }
+  .proof-badge--active { background: rgba(139,107,255,0.14); color: #b3a0ff; }
+  .proof-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .proof-meta { font-size: 12.5px; color: var(--text-muted); }
+  .proof-quote {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    border-left: 2px solid var(--border);
+    padding-left: 12px;
+  }
+  .proof-stats {
+    display: flex;
+    gap: 18px;
+    margin-top: 2px;
+  }
+  .proof-stat-value {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .proof-stat-label {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  footer {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+
+  @media (max-width: 720px) {
+    .two-col, .proof-grid { grid-template-columns: 1fr; }
+    .tab-btn { margin-right: 14px; }
+  }
+</style>
+
+<div class="dash">
+
+  <div class="header">
+    <div class="eyebrow">Stratos Agency</div>
+    <div class="title-row">
+      <h1>Business snapshot</h1>
+      <div class="synced">Synced from Master_Stratos_DM_Sprint_Tracker · Sep 28, 2026</div>
+    </div>
+  </div>
+
+  <div class="tabbar" role="tablist">
+    <button class="tab-btn" role="tab" data-tab="overview" aria-selected="true">Overview</button>
+    <button class="tab-btn" role="tab" data-tab="goals" aria-selected="false">Goals</button>
+    <button class="tab-btn" role="tab" data-tab="leads" aria-selected="false">Warm Leads</button>
+  </div>
+
+  <!-- ===================== OVERVIEW ===================== -->
+  <div class="tab-panel" id="panel-overview">
+
+    <div class="kpi-grid">
+      <div class="kpi kpi--accent">
+        <div class="kpi-label">Candidates contacted</div>
+        <div class="kpi-value">150</div>
+        <div class="kpi-sub">of 567 sourced</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Current day</div>
+        <div class="kpi-value">Day 4</div>
+        <div class="kpi-sub">of 60 · Sep 28, 2026</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Outreach funnel</div>
+        <div class="panel-note">Series A Candidates + Legacy Pre-Seed tabs</div>
+      </div>
+      <div class="panel-sub">From every company you've ever sourced down to a paid client.</div>
+      <div class="bar-list" id="funnel"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Candidate pool remaining</div>
+      </div>
+      <div class="panel-sub">Not yet contacted, by pool.</div>
+      <div class="bar-list" id="pool"></div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--data-active)"></span>Series A — active pool</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--data-paused)"></span>Legacy pre-seed — paused</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== GOALS ===================== -->
+  <div class="tab-panel" id="panel-goals" hidden>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Daily send target</div>
+      </div>
+      <div class="panel-sub">Your split goal — Daily Progress tab isn't logging actuals yet, so this is target, not actual.</div>
+      <div class="bar-list" id="channels"></div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--data-linkedin)"></span>LinkedIn</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--data-x)"></span>X</span>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-label">Combined daily goal</div>
+        <div class="kpi-value">60</div>
+        <div class="kpi-sub">20 LinkedIn + 40 X</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Sprint length</div>
+        <div class="kpi-value">60 days</div>
+        <div class="kpi-sub">Day 4 in progress</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">New formula performance</div>
+        <div class="panel-note">Since Day 1 · Fri Sep 25</div>
+      </div>
+      <div class="panel-sub">Tracked separately from all-time pipeline — this is only messages sent under the new researched-detail format.</div>
+      <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="kpi">
+          <div class="kpi-label">Sent</div>
+          <div class="kpi-value">80</div>
+          <div class="kpi-sub">Fri + Mon</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Accepted</div>
+          <div class="kpi-value">6</div>
+          <div class="kpi-sub">7.5% accept rate</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Replied</div>
+          <div class="kpi-value">1</div>
+          <div class="kpi-sub">1.3% reply rate</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== WARM LEADS ===================== -->
+  <div class="tab-panel" id="panel-leads" hidden>
+
+    <div class="proof-grid">
+      <div class="proof-card">
+        <span class="proof-badge">Closed</span>
+        <div class="proof-title">Rindler</div>
+        <div class="proof-meta">YC S26 · AI-agent web infra</div>
+        <div class="proof-quote">"Your work was really good, and happy to be a case study of such."</div>
+        <div class="proof-stats">
+          <div>
+            <div class="proof-stat-value">4 wks</div>
+            <div class="proof-stat-label">Engagement</div>
+          </div>
+          <div>
+            <div class="proof-stat-value">Wrapped up</div>
+            <div class="proof-stat-label">amicably</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="proof-card">
+        <span class="proof-badge proof-badge--active">In conversation</span>
+        <div class="proof-title">nCompass Technologies</div>
+        <div class="proof-meta">Aditya · replied to cold outreach</div>
+        <div class="proof-quote">"This can run practically without an engineer in the loop. How can I help you?"</div>
+        <div class="proof-stats">
+          <div>
+            <div class="proof-stat-value">2nd</div>
+            <div class="proof-stat-label">reply this sprint</div>
+          </div>
+          <div>
+            <div class="proof-stat-value">Qualifying</div>
+            <div class="proof-stat-label">current stage</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    Pulled from your live Google Sheet's Series A Candidates and Legacy Pre-Seed tabs, plus what you've told me directly in chat. Contacted count includes the 36 you sent from the latest batch (Unusual through Dexter Technologies) before pausing — mark these "Used" in your tracker when you get a chance so the sheet and this dashboard stay in sync. New formula performance (Goals tab) covers Fri + Mon sends only — today's remaining sends from the current batch aren't in that 80 yet, tell me the count once you finish. Sumanyu Sharma accepted a connection but isn't matched to a company in my records — let me know who that is and I'll fold him into the right batch.
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  function makeBar(container, rows) {
+    var max = Math.max.apply(null, rows.map(function (r) { return r.value; }));
+    rows.forEach(function (r) {
+      var pct = max > 0 ? Math.max((r.value / max) * 100, 2) : 2;
+      var row = document.createElement('div');
+      row.className = 'bar-row';
+      var top = document.createElement('div');
+      top.className = 'bar-row-top';
+      var name = document.createElement('span');
+      name.className = 'bar-row-name';
+      name.textContent = r.label;
+      var val = document.createElement('span');
+      val.className = 'bar-row-value';
+      val.textContent = r.display || r.value;
+      top.appendChild(name);
+      top.appendChild(val);
+      var track = document.createElement('div');
+      track.className = 'bar-track';
+      var fill = document.createElement('div');
+      fill.className = 'bar-fill';
+      fill.style.width = pct + '%';
+      fill.style.background = r.color;
+      track.appendChild(fill);
+      row.appendChild(top);
+      row.appendChild(track);
+      container.appendChild(row);
+    });
+  }
+
+  makeBar(document.getElementById('funnel'), [
+    { label: 'Sourced',    value: 567, color: 'var(--blue-250)' },
+    { label: 'Contacted',  value: 150, color: 'var(--blue-350)' },
+    { label: 'Replied',    value: 2,   color: 'var(--blue-450)' },
+    { label: 'Closed',     value: 1,   color: 'var(--blue-600)' }
+  ]);
+
+  makeBar(document.getElementById('pool'), [
+    { label: 'Series A — not used',      value: 146, color: 'var(--data-active)' },
+    { label: 'Legacy pre-seed — not used', value: 271, color: 'var(--data-paused)' }
+  ]);
+
+  makeBar(document.getElementById('channels'), [
+    { label: 'LinkedIn', value: 20, display: '20 / day', color: 'var(--data-linkedin)' },
+    { label: 'X',        value: 40, display: '40 / day', color: 'var(--data-x)' }
+  ]);
+
+  // ---- Tabs ----
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
+  var panels = {
+    overview: document.getElementById('panel-overview'),
+    goals: document.getElementById('panel-goals'),
+    leads: document.getElementById('panel-leads')
+  };
+
+  function activate(name, persist) {
+    tabs.forEach(function (t) {
+      var on = t.getAttribute('data-tab') === name;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    Object.keys(panels).forEach(function (key) {
+      panels[key].hidden = key !== name;
+    });
+    if (persist) {
+      try { localStorage.setItem('stratos-dash-tab', name); } catch (e) {}
+    }
+  }
+
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      activate(t.getAttribute('data-tab'), true);
+    });
+  });
+
+  var saved = null;
+  try { saved = localStorage.getItem('stratos-dash-tab'); } catch (e) {}
+  if (saved && panels[saved]) activate(saved, false);
+})();
+</script>
+
+</body></html>
